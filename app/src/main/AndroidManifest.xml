@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.vending.BILLING" />
+    <uses-permission android:name="com.android.vending.CHECK_LICENSE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="com.google.android.finsky.permission.BIND_GET_INSTALL_REFERRER_SERVICE" />
+
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.touchscreen"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.microphone"
+        android:required="false" />
+
+    <queries>
+        <package android:name="com.mojang.minecraftpe" />
+        <package android:name="com.mojang.minecrafttrialpe" />
+    </queries>
+
+    <application
+        android:allowBackup="true"
+        android:appCategory="game"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:largeHeap="true"
+        android:name=".LauncherApp"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.SculptLauncher.Start"
+        tools:targetApi="31">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".frontend.activity.MinecraftActivity"
+            android:alwaysRetainTaskState="true"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
+            android:excludeFromRecents="false"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar"
+            tools:ignore="DiscouragedApi">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="sc_launcher" />
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="org.launcher.sculptlauncher.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+        </provider>
+
+        <!--    Mojang Activities    -->
+        <activity
+            android:exported="true"
+            android:theme="@style/Theme.SculptLauncher.Game"
+            android:name="com.mojang.minecraftpe.MainActivity"
+            android:excludeFromRecents="false"
+            android:launchMode="singleTask"
+            android:screenOrientation="sensorLandscape"
+            android:configChanges="fontScale|keyboard|keyboardHidden|locale|mcc|mnc|navigation|orientation|screenLayout|screenSize|smallestScreenSize|touchscreen|uiMode"
+            android:alwaysRetainTaskState="true"
+            tools:ignore="DiscouragedApi">
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.VIEW" />
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action
+                    android:name="xbox_live_game_invite" />
+                <action
+                    android:name="xbox_live_achievement_unlock" />
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action
+                    android:name="android.intent.action.VIEW" />
+                <category
+                    android:name="android.intent.category.DEFAULT" />
+                <category
+                    android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="minecraft" />
+            </intent-filter>
+        </activity>
+        <service
+            android:name="com.mojang.minecraftpe.ImportService"
+            android:exported="false" />
+        <meta-data
+            android:name="xperiaplayoptimized_content"
+            android:value="true" />
+        <meta-data
+            android:name="game_display_name"
+            android:resource="@string/app_name" />
+        <meta-data
+            android:name="game_icon"
+            android:resource="@mipmap/ic_launcher_round" />
+        <meta-data
+            android:name="appcenter_android_id"
+            android:value="c35d56a4–fe9c–4490–9d16-600825114d4b" />
+        <receiver
+            android:name="com.appsflyer.SingleInstallBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action
+                    android:name="com.android.vending.INSTALL_REFERRER" />
+            </intent-filter>
+        </receiver>
+        <uses-library
+            android:name="xperiaplaycertified"
+            android:required="false" />
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND"
+            android:exported="true">
+            <intent-filter>
+                <action
+                    android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category
+                    android:name="com.mcal.mcpelauncher" />
+            </intent-filter>
+        </receiver>
+        <activity android:name="com.microsoft.xal.browser.WebView"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:exported="false" />
+        <activity android:name="com.microsoft.xal.browser.WebKitWebViewController"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:exported="false" />
+        <activity android:name="com.microsoft.aad.adal.AuthenticationActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:exported="false" />
+        <activity android:name="com.microsoft.xal.browser.IntentHandler"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:exported="false" />
+        <activity android:name="com.microsoft.xal.browser.test.XalLoginActivity"
+            android:theme="@style/Theme.AppCompat.DayNight"
+            android:exported="false" />
+    </application>
+
+</manifest>
