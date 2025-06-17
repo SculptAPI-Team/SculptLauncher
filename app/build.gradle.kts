@@ -12,6 +12,8 @@ android {
 
     packaging {
         resources.excludes.add("META-INF/DEPENDENCIES")
+        jniLibs.pickFirsts.add("**/libshadowhook.so")
+        jniLibs.pickFirsts.add("**/libshadowhook_nothing.so")
     }
 
     externalNativeBuild {
@@ -81,6 +83,7 @@ dependencies {
     // App self-dep
     implementation(project(":minecraftpe"))
     implementation(project(":microsoft:xal"))
+    implementation(project(":hooker"))
     implementation(libs.play.services.gcm)
     implementation(libs.play.services.iid)
     implementation(files("../minecraftpe/src/main/libs/appsflyer.jar"))

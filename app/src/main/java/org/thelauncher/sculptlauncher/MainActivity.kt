@@ -36,6 +36,7 @@ import org.thelauncher.sculptlauncher.backend.AppRouter
 import org.thelauncher.sculptlauncher.frontend.screen.HomeScreen
 import org.thelauncher.sculptlauncher.frontend.theme.SculptLauncherTheme
 import org.thelauncher.sculptlauncher.frontend.viewmodel.SharedViewModel
+import org.thelauncher.sculptlauncher.hooker.SCHooker
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -104,5 +105,9 @@ class MainActivity : ComponentActivity() {
 
     companion object {
         lateinit var activity: MainActivity
+        init {
+            val hk = SCHooker()
+            println(hk.stringFromJNI())
+        }
     }
 }

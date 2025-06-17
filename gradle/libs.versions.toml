@@ -23,6 +23,7 @@ pkix = "1.54.0.0"
 
 firebase-iid = "21.1.0"
 firebase-messaging = "24.0.1"
+shadowhook = "1.1.1"
 simple-xml = "2.7.1"
 
 playServicesIid = "17.0.0"
@@ -60,6 +61,7 @@ androidx-browser = { module = "androidx.browser:browser", version.ref = "browser
 
 firebase-iid = { module = "com.google.firebase:firebase-iid", version.ref = "firebase-iid" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebase-messaging" }
+shadowhook = { module = "com.bytedance.android:shadowhook", version.ref = "shadowhook" }
 simple-xml = { module = "org.simpleframework:simple-xml", version.ref = "simple-xml" }
 
 httpmime = { module = "org.apache.httpcomponents:httpmime", version.ref = "httpclient" }
