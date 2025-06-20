@@ -153,7 +153,7 @@
                 <action
                     android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <category
-                    android:name="com.mcal.mcpelauncher" />
+                    android:name="org.thelauncher.sculptlauncher" />
             </intent-filter>
         </receiver>
         <activity android:name="com.microsoft.xal.browser.WebView"
@@ -171,6 +171,15 @@
         <activity android:name="com.microsoft.xal.browser.test.XalLoginActivity"
             android:theme="@style/Theme.AppCompat.DayNight"
             android:exported="false" />
+        <receiver android:name="com.mojang.minecraftpe.BatteryMonitor"
+            tools:ignore="Instantiatable" />
+        <service
+            android:name="com.mojang.minecraftpe.NotificationListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

@@ -2,9 +2,17 @@ package com.mojang.minecraftpe;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Build;
 import android.os.Build.VERSION;
+import android.provider.Settings;
 
+import androidx.core.os.EnvironmentCompat;
+
+import com.mojang.minecraftpe.hardwareinfo.CPUCluster;
+import com.mojang.minecraftpe.hardwareinfo.CPUTopologyInfo;
 import com.mojang.minecraftpe.platforms.Platform;
 
 import org.jetbrains.annotations.Contract;
@@ -22,102 +30,15 @@ import java.util.regex.Pattern;
 
 @SuppressLint({"DefaultLocale"})
 public class HardwareInformation {
+    private static final CPUInfo cpuInfo = getCPUInfo();
+    private final ApplicationInfo appInfo;
     private final Context context;
+    private final PackageManager packageManager;
 
-    HardwareInformation(Context context) {
+    public HardwareInformation(Context context) {
+        this.packageManager = context.getPackageManager();
+        this.appInfo = context.getApplicationInfo();
         this.context = context;
-    }
-
-    @NotNull
-    static String getDeviceModelName() {
-        return Build.MANUFACTURER.toUpperCase() + " " + Build.MODEL;
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static String getAndroidVersion() {
-        return "Android " + VERSION.RELEASE;
-    }
-
-    public static @NotNull String getLocale() {
-        return Locale.getDefault().toString();
-    }
-
-    public static String getCPUType() {
-        return Platform.createPlatform(false).getABIS();
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static String getCPUName() {
-        return "unknown";
-    }
-
-    @NotNull
-    @Contract(pure = true)
-    public static String getCPUFeatures() {
-        return "unknown";
-    }
-
-    public static int getNumCores() {
-        return 1;
-    }
-
-    @NotNull
-    @Contract(" -> new")
-    public static CPUInfo getCPUInfo() {
-        Map<String, String> list = new HashMap<>();
-        int processorCount = 0;
-        if (new File("/proc/cpuinfo").exists()) {
-            try {
-                BufferedReader br = new BufferedReader(new FileReader(new File("/proc/cpuinfo")));
-                Pattern pattern = Pattern.compile("(\\w*)\\s*:\\s([^\\n]*)");
-                while (true) {
-                    String line = br.readLine();
-                    if (line == null) {
-                        break;
-                    }
-                    Matcher matcher = pattern.matcher(line);
-                    if (matcher.find() && matcher.groupCount() == 2) {
-                        if (!list.containsKey(matcher.group(1))) {
-                            list.put(matcher.group(1), matcher.group(2));
-                        }
-                        if (matcher.group(1).contentEquals("processor")) {
-                            processorCount++;
-                        }
-                    }
-                }
-                br.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return new CPUInfo(list, processorCount);
-    }
-
-    @SuppressLint("HardwareIds")
-    public static String getSerialNumber() {
-        return Build.SERIAL;
-    }
-
-    public static String getBoard() {
-        return Build.BOARD;
-    }
-
-    public String getSecureId() {
-        return "SecureId";
-    }
-
-    public String getInstallerPackageName() {
-        return "installer.package.name";
-    }
-
-    public int getSignaturesHashCode() {
-        return 0;
-    }
-
-    public boolean getIsRooted() {
-        return false;
     }
 
     public static class CPUInfo {
@@ -129,15 +50,193 @@ public class HardwareInformation {
             this.numberCPUCores = numberCPUCores;
         }
 
-        public String getCPULine(String line) {
-            if (this.cpuLines.containsKey(line)) {
-                return cpuLines.get(line);
-            }
-            return "";
+        String getCPULine(String line) {
+            return this.cpuLines.containsKey(line) ? this.cpuLines.get(line) : "";
         }
 
-        public int getNumberCPUCores() {
-            return numberCPUCores;
+        int getNumberCPUCores() {
+            return this.numberCPUCores;
+        }
+    }
+
+    public static String getDeviceModelName() {
+        String str = Build.MANUFACTURER;
+        String str2 = Build.MODEL;
+        if (str2.startsWith(str)) {
+            return str2.toUpperCase(Locale.ENGLISH);
+        }
+        return str.toUpperCase(Locale.ENGLISH) + " " + str2;
+    }
+
+    public String getAndroidVersion() {
+        if (((MainActivity) this.context).isChromebook()) {
+            return "ChromeOS " + Build.VERSION.RELEASE;
+        }
+        return "Android " + Build.VERSION.RELEASE;
+    }
+
+    public static String getLocale() {
+        return Locale.getDefault().toString();
+    }
+
+    public static String getCPUType() {
+        return Platform.createPlatform(false).getABIS();
+    }
+
+    public static String getCPUName() {
+        CPUInfo cPUInfo = cpuInfo;
+        String cPULine = cPUInfo.getCPULine("model name");
+        return !cPULine.isEmpty() ? cPULine : cPUInfo.getCPULine("Hardware");
+    }
+
+    public static String getSoCName() {
+        String cPULine;
+        if (Build.VERSION.SDK_INT >= 31) {
+            cPULine = Build.SOC_MODEL.equals(EnvironmentCompat.MEDIA_UNKNOWN) ? "" : Build.SOC_MODEL;
+        } else {
+            cPULine = cpuInfo.getCPULine("Hardware");
+        }
+        return cPULine.isEmpty() ? cpuInfo.getCPULine("model name") : cPULine;
+    }
+
+    public static String getCPUFeatures() {
+        return cpuInfo.getCPULine("Features");
+    }
+
+    public static int getNumCores() {
+        int cPUCount = CPUTopologyInfo.getInstance().getCPUCount();
+        return cPUCount == 0 ? cpuInfo.getNumberCPUCores() : cPUCount;
+    }
+
+    public static int getNumClusters() {
+        return CPUTopologyInfo.getInstance().getCPUClusterCount();
+    }
+
+    public static int getPerformanceCoreCount() {
+        CPUCluster[] clusterArray = CPUTopologyInfo.getInstance().getClusterArray();
+        int numCores = getNumCores();
+        if (clusterArray.length == 0) {
+            if (numCores > 2) {
+                return numCores >> 1;
+            }
+            return 1;
+        }
+        if (clusterArray.length == 1) {
+            return numCores;
+        }
+        CPUCluster cPUCluster = clusterArray[0];
+        long maxFreq = cPUCluster.getMaxFreq();
+        for (int i = 1; i < clusterArray.length; i++) {
+            if (clusterArray[i].getMaxFreq() < maxFreq) {
+                cPUCluster = clusterArray[i];
+            }
+        }
+        return numCores - cPUCluster.getClusterCoreCount();
+    }
+
+    public static CPUInfo getCPUInfo() {
+        HashMap map = new HashMap();
+        int i = 0;
+        if (new File("/proc/cpuinfo").exists()) {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(new File("/proc/cpuinfo")));
+                Pattern patternCompile = Pattern.compile("([\\w\\ ]*)\\s*:\\s([^\\n]*)");
+                while (true) {
+                    String line = bufferedReader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    Matcher matcher = patternCompile.matcher(line);
+                    if (matcher.find() && matcher.groupCount() == 2) {
+                        if (!map.containsKey(matcher.group(1))) {
+                            map.put(matcher.group(1), matcher.group(2));
+                        }
+                        if (matcher.group(1).contentEquals("processor")) {
+                            i++;
+                        }
+                    }
+                }
+                bufferedReader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return new CPUInfo(map, i);
+    }
+
+    public String getSecureId() {
+        return Settings.Secure.getString(this.context.getContentResolver(), "android_id");
+    }
+
+    public static String getSerialNumber() {
+        return Build.SERIAL;
+    }
+
+    public static String getBoard() {
+        return Build.BOARD;
+    }
+
+    public String getInstallerPackageName() {
+        PackageManager packageManager = this.packageManager;
+        return (packageManager == null || this.appInfo == null) ? "" : packageManager.getInstallerPackageName(this.context.getPackageName());
+    }
+
+    public int getSignaturesHashCode() {
+        Exception e;
+        int iHashCode;
+        try {
+            iHashCode = 0;
+            for (Signature signature : this.packageManager.getPackageInfo(this.context.getPackageName(), 64).signatures) {
+                try {
+                    iHashCode ^= signature.hashCode();
+                } catch (Exception e2) {
+                    e = e2;
+                    e.printStackTrace();
+                    return iHashCode;
+                }
+            }
+        } catch (Exception e3) {
+            e = e3;
+            iHashCode = 0;
+        }
+        return iHashCode;
+    }
+
+    public boolean getIsRooted() {
+        return checkRootA() || checkRootB() || checkRootC();
+    }
+
+    private boolean checkRootA() {
+        String str = Build.TAGS;
+        return str != null && str.contains("test-keys");
+    }
+
+    private boolean checkRootB() {
+        String[] strArr = {"/sbin/su", "/system/bin/su", "/system/xbin/su", "/data/local/xbin/su", "/data/local/bin/su", "/system/sd/xbin/su", "/system/bin/failsafe/su", "/system/app/Superuser.apk", "/data/local/su", "/su/bin/su"};
+        for (int i = 0; i < 10; i++) {
+            if (new File(strArr[i]).exists()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean checkRootC() {
+        String[] strArr = {"eu.chainfire.supersu", "eu.chainfire.supersu.pro"};
+        for (int i = 0; i < 2; i++) {
+            if (appInstalled(strArr[i])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean appInstalled(String packageName) {
+        try {
+            this.packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (Exception unused) {
+            return false;
         }
     }
 }

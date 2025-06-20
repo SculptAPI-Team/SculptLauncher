@@ -50,4 +50,5 @@ dependencies {
     implementation(libs.pkix)
     implementation(libs.httpclient)
     implementation(libs.httpmime)
+    implementation(libs.firebase.messaging)
 }

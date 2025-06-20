@@ -17,6 +17,7 @@ object LibraryLoader {
     @JvmStatic
     @SuppressLint("UnsafeDynamicallyLoadedCode")
     fun loadFMod(mcLibsPath: String?) {
+        System.load(File(mcLibsPath, "libMediaDecoders_Android.so").absolutePath)
         System.load(File(mcLibsPath, "libfmod.so").absolutePath)
     }
 
