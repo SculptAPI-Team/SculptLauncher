@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
@@ -40,28 +43,34 @@ public class HttpClientRequest {
         requestBuilder = requestBuilder.url(url);
     }
 
-    public void setHttpMethodAndBody(String method, String contentType, byte[] body) {
-        if (body != null && body.length != 0) {
-            requestBuilder = requestBuilder.method(method, RequestBody.create(MediaType.parse(contentType), body));
-        } else if ("POST".equals(method) || "PUT".equals(method)) {
-            requestBuilder = requestBuilder.method(method, RequestBody.create(null, NO_BODY));
+    public void setHttpMethodAndBody(String str, long j, String str2, long j2) {
+        RequestBody httpClientRequestBody = null;
+        if (j2 == 0) {
+            if (HttpPost.METHOD_NAME.equals(str) || HttpPut.METHOD_NAME.equals(str)) {
+                httpClientRequestBody = RequestBody.create(NO_BODY, str2 != null ? MediaType.parse(str2) : null);
+            }
         } else {
-            requestBuilder = requestBuilder.method(method, null);
+            httpClientRequestBody = new HttpClientRequestBody(j, str2, j2);
         }
+        this.requestBuilder.method(str, httpClientRequestBody);
     }
 
     public void setHttpHeader(String name, String value) {
         requestBuilder = requestBuilder.addHeader(name, value);
     }
 
-    public void doRequestAsync(final long sourceCall) {
-        OK_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
-            public void onFailure(Call call, IOException e) {
-                OnRequestFailed(sourceCall, e.getClass().getCanonicalName());
+    public void doRequestAsync(final long j) {
+        OK_CLIENT.newCall(this.requestBuilder.build()).enqueue(new Callback() { // from class: com.xbox.httpclient.HttpClientRequest.1
+            @Override // okhttp3.Callback
+            public void onFailure(Call call, IOException iOException) {
+                HttpClientRequest.this.OnRequestFailed(j, iOException.getClass().getCanonicalName());
             }
 
-            public void onResponse(Call call, Response response) throws IOException {
-                OnRequestCompleted(sourceCall, new HttpClientResponse(response));
+            @Override // okhttp3.Callback
+            public void onResponse(Call call, Response response) {
+                HttpClientRequest httpClientRequest = HttpClientRequest.this;
+                long j2 = j;
+                httpClientRequest.OnRequestCompleted(j2, new HttpClientResponse(j2, response));
             }
         });
     }

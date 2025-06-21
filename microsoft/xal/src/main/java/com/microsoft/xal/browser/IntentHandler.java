@@ -22,13 +22,18 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.microsoft.xal.logging.XalLogger;
+
 public class IntentHandler extends AppCompatActivity {
-    public static final String TAG = "IntentHandler";
+    private final XalLogger m_logger = new XalLogger("IntentHandler");
 
     @SuppressLint("WrongConstant")
+    @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        Intent intent = new Intent(this, WebView.class);
+        this.m_logger.Important("onCreate() New intent received.");
+        this.m_logger.Flush();
+        Intent intent = new Intent(this, BrowserLaunchActivity.class);
         intent.setData(getIntent().getData());
         intent.addFlags(603979776);
         startActivity(intent);

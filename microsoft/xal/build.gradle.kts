@@ -47,4 +47,5 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.pkix)
     implementation(libs.androidx.browser)
+    implementation("androidx.lifecycle:lifecycle-process:2.9.1")
 }
