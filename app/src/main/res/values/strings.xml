@@ -1,5 +1,3 @@
 <resources>
-    <string name="app_name">Sculpt Launcher</string>
-
-    <string name="app_blocked_not_installed">Minecraft not installed!</string>
+    <string name="app_name">SculptLauncher</string>
 </resources>

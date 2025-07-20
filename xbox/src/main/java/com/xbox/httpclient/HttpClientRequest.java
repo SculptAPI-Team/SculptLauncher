@@ -1,12 +1,11 @@
 package com.xbox.httpclient;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+
 import java.io.IOException;
+import java.net.UnknownHostException;
+
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -15,53 +14,52 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * 13.08.2022
+ *
+ * @author Тимашков Иван
+ * @author https://github.com/TimScriptov
+ */
 public class HttpClientRequest {
     private static final byte[] NO_BODY = new byte[0];
-    private static OkHttpClient OK_CLIENT = new OkHttpClient.Builder().retryOnConnectionFailure(false).build();
-    private Request okHttpRequest;
+    private static final OkHttpClient OK_CLIENT = new OkHttpClient.Builder().retryOnConnectionFailure(false).build();
     private Request.Builder requestBuilder = new Request.Builder();
-
-    public static boolean isNetworkAvailable(@NotNull Context context) {
-        @SuppressLint("WrongConstant") NetworkInfo activeNetworkInfo = ((ConnectivityManager) context.getSystemService("connectivity")).getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    @NotNull
-    @Contract(value = " -> new", pure = true)
-    public static HttpClientRequest createClientRequest() {
-        return new HttpClientRequest();
-    }
 
     public native void OnRequestCompleted(long j, HttpClientResponse httpClientResponse);
 
-    public native void OnRequestFailed(long j, String str);
+    public native void OnRequestFailed(long j, String str, boolean z);
 
-    public void setHttpUrl(String url) {
-        requestBuilder = requestBuilder.url(url);
+    public void setHttpUrl(String str) {
+        requestBuilder = requestBuilder.url(str);
     }
 
-    public void setHttpMethodAndBody(String method, String contentType, byte[] body) {
-        if (body != null && body.length != 0) {
-            requestBuilder = requestBuilder.method(method, RequestBody.create(MediaType.parse(contentType), body));
-        } else if ("POST".equals(method) || "PUT".equals(method)) {
-            requestBuilder = requestBuilder.method(method, RequestBody.create(null, NO_BODY));
+    public void setHttpMethodAndBody(String str, long j, String str2, long j2) {
+        RequestBody httpClientRequestBody = null;
+        if (j2 == 0) {
+            if (HttpPost.METHOD_NAME.equals(str) || HttpPut.METHOD_NAME.equals(str)) {
+                httpClientRequestBody = RequestBody.create(NO_BODY, str2 != null ? MediaType.parse(str2) : null);
+            }
         } else {
-            requestBuilder = requestBuilder.method(method, null);
+            httpClientRequestBody = new HttpClientRequestBody(j, str2, j2);
         }
+        requestBuilder.method(str, httpClientRequestBody);
     }
 
-    public void setHttpHeader(String name, String value) {
-        requestBuilder = requestBuilder.addHeader(name, value);
+    public void setHttpHeader(String str, String str2) {
+        requestBuilder = requestBuilder.addHeader(str, str2);
     }
 
-    public void doRequestAsync(final long sourceCall) {
+    public void doRequestAsync(final long j) {
         OK_CLIENT.newCall(requestBuilder.build()).enqueue(new Callback() {
-            public void onFailure(Call call, IOException e) {
-                OnRequestFailed(sourceCall, e.getClass().getCanonicalName());
+            @Override
+            public void onFailure(Call call, IOException iOException) {
+                OnRequestFailed(j, iOException.getClass().getCanonicalName(), iOException instanceof UnknownHostException);
             }
 
-            public void onResponse(Call call, Response response) throws IOException {
-                OnRequestCompleted(sourceCall, new HttpClientResponse(response));
+            @Override
+            public void onResponse(Call call, Response response) {
+                HttpClientRequest httpClientRequest = HttpClientRequest.this;
+                httpClientRequest.OnRequestCompleted(j, new HttpClientResponse(j, response));
             }
         });
     }

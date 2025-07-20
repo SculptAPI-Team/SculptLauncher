@@ -12,7 +12,7 @@
 //-------------------------------------------------------------
 
 JavaVM* mJvm = nullptr;
-std::string* mAddrAndroidAppDataPath = nullptr;
+//std::string* mAddrAndroidAppDataPath = nullptr;
 std::string mMCPENativeLibPath;
 
 //-------------------------------------------------------------
@@ -31,9 +31,9 @@ std::string toString(JNIEnv* env, jstring j_str) {
 //-------------------------------------------------------------
 
 namespace NModAPI {
-    void nativeSetDataDirectory(JNIEnv*env,jobject thiz,jstring directory) {
-        *mAddrAndroidAppDataPath = toString(env,directory);
-    }
+//    void nativeSetDataDirectory(JNIEnv*env,jobject thiz,jstring directory) {
+//        *mAddrAndroidAppDataPath = toString(env,directory);
+//    }
     jstring nativeDemangle(JNIEnv*env,jobject thiz,jstring str) {
         char const* symbol_name = toString(env,str).c_str();
         if(symbol_name) {
@@ -50,7 +50,7 @@ namespace NModAPI {
 
 extern "C" JNIEXPORT jboolean JNICALL Java_org_thelauncher_sculptlauncher_backend_launcher_util_NativeUtil_nativeRegisterNatives(JNIEnv*env, jobject thiz, jclass cls) {
     JNINativeMethod methods[] = {
-        {"nativeSetDataDirectory", "(Ljava/lang/String;)V", (void *)&NModAPI::nativeSetDataDirectory},
+        //{"nativeSetDataDirectory", "(Ljava/lang/String;)V", (void *)&NModAPI::nativeSetDataDirectory},
         {"nativeDemangle", "(Ljava/lang/String;)Ljava/lang/String;", (void *)&NModAPI::nativeDemangle}
     };
     
@@ -63,7 +63,7 @@ extern "C" JNIEXPORT void JNICALL Java_org_thelauncher_sculptlauncher_backend_la
     const char* mNativeLibPath = toString(env,libPath).c_str();
     mMCPENativeLibPath = mNativeLibPath;
     void* imageMCPE = (void*)dlopen(mNativeLibPath,RTLD_LAZY);
-    mAddrAndroidAppDataPath = ((std::string*)dlsym(imageMCPE,"_ZN19AppPlatform_android20ANDROID_APPDATA_PATHE"));
+    //mAddrAndroidAppDataPath = ((std::string*)dlsym(imageMCPE,"_ZN19AppPlatform_android20ANDROID_APPDATA_PATHE"));
     dlclose(imageMCPE);
 }
 

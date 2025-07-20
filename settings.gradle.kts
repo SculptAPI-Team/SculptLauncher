@@ -19,9 +19,7 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Sculpt Launcher"
+rootProject.name = "SculptLauncher"
 include(":app")
 include(":xbox")
-include(":microsoft:xal")
-include(":microsoft:xbox")
-include(":minecraftpe")
+include(":minecraft")
