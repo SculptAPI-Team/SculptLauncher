@@ -21,5 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "SculptLauncher"
 include(":app")
-include(":xbox")
 include(":minecraft")

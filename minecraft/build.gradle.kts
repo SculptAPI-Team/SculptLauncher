@@ -45,7 +45,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    implementation(files("src/main/libs/xbox-release.aar"))
     implementation("com.google.firebase:firebase-messaging:24.1.2")
-    implementation(project(":xbox"))
     implementation("org.apache.httpcomponents:httpclient:4.5.14")
 }
