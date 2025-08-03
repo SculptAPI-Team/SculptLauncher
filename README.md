@@ -1,16 +1,15 @@
-<p align="center">
-  <a href="https://discord.gg/TUKfADsC" target="_blank">
-    <!-- 使用Discord官方API显示在线人数 -->
-    <img src="https://discord.com/api/guilds/1401241266682859520/widget.png?style=banner2" alt="Join our Discord">
-  </a>
-</p>
-
-<h1 align="center">SculptLauncher</h1>
-<p align="center">
-  <strong>Native Modding Platform for Minecraft Bedrock Edition on Android</strong>
-</p>
-
-
+<div align="center">
+  <!-- <img src="path/logo.png" alt="SculptLauncher" width="150" height="150" /> -->
+  
+  <h1>SculptLauncher
+    <br />
+    <a href="https://discord.gg/TUKfADsC">
+      <img alt="Discord" src="https://img.shields.io/discord/1401241266682859520?color=5865f2&label=Discord&style=flat" />
+    </a>
+    <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/your-username/SculptLauncher/total?style=flat">
+  </h1>
+  <p><strong>Native Modding Platform for Minecraft Bedrock Edition on Android</strong></p>
+</div>
 
 ## 📦 Overview
 SculptLauncher is an Android modding platform for Minecraft Bedrock Edition that enables developers to create powerful game modifications using native C/C++ code. Designed as a lightweight and performant alternative to script-based modding solutions, SculptLauncher provides low-level access to game mechanics while maintaining stability.
@@ -39,6 +38,6 @@ SculptLauncher is an Android modding platform for Minecraft Bedrock Edition that
 
 ### Building from Source
 ```bash
-git clone https://github.com/your-username/SculptLauncher.git
+git clone https://github.com/SculptAPI-Team/SculptLauncher.git
 cd SculptLauncher
 ./gradlew assembleDebug
