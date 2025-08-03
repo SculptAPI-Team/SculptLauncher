@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://discord.gg/TUKfADsC" target="_blank">
-    <img src="https://img.shields.io/discord/your_server_id_here?label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge" alt="Discord">
+    <img src="https://img.shields.io/discord/1401241266682859520?label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge" alt="Discord">
   </a>
 </p>
 
@@ -40,7 +40,7 @@ SculptLauncher is an Android modding platform for Minecraft Bedrock Edition that
 
 ### Building from Source
 ```bash
-git clone https://github.com/your-username/SculptLauncher.git
+git clone https://github.com/SculptAPI-Team/SculptLauncher.git
 cd SculptLauncher
 
 # Configure build
