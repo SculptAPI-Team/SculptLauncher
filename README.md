@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="https://discord.gg/YOUR_INVITE_CODE" target="_blank">
-    <img src="https://img.shields.io/discord/YOUR_SERVER_ID?label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge" alt="Discord">
+  <a href="https://discord.gg/TUKfADsC" target="_blank">
+    <img src="https://img.shields.io/discord/your_server_id_here?label=Join%20Our%20Discord&logo=discord&logoColor=white&style=for-the-badge" alt="Discord">
   </a>
 </p>
 
@@ -32,11 +32,19 @@ SculptLauncher is an Android modding platform for Minecraft Bedrock Edition that
 
 > More versions will be added as the project matures
 
-## 🛠️ Development Roadmap
-```mermaid
-graph LR
-    A[Core Launcher] --> B[Mod Loader]
-    B --> C[JNI Bindings]
-    C --> D[Modding API]
-    D --> E[Debug Tools]
-    E --> F[Mod Repository]
+## 📚 Getting Started
+### Prerequisites
+- Android NDK r25+
+- Android Studio Giraffe+
+- Minecraft Bedrock Edition (supported version)
+
+### Building from Source
+```bash
+git clone https://github.com/your-username/SculptLauncher.git
+cd SculptLauncher
+
+# Configure build
+./gradlew configureCMakeDebug
+
+# Build project
+./gradlew assembleDebug
