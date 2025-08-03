@@ -47,6 +47,7 @@ android {
     }
     buildFeatures {
         compose = true
+        prefab = true
     }
     externalNativeBuild {
         cmake {
@@ -79,7 +80,7 @@ dependencies {
     implementation("androidx.core:core-splashscreen:1.2.0-rc01")
     implementation("androidx.navigation:navigation-compose:${nav_version}")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.9.0")
+    implementation("com.bytedance.android:shadowhook:2.0.0")
     implementation(libs.androidx.icons.ext)
-
     implementation(project(":minecraft"))
 }
