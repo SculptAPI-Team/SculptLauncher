@@ -6,7 +6,6 @@
     <a href="https://discord.gg/TUKfADsC">
       <img alt="Discord" src="https://img.shields.io/discord/1401241266682859520?color=5865f2&label=Discord&style=flat" />
     </a>
-    <img alt="GitHub Downloads" src="https://img.shields.io/github/downloads/your-username/SculptLauncher/total?style=flat">
   </h1>
   <p><strong>Native Modding Platform for Minecraft Bedrock Edition on Android</strong></p>
 </div>
