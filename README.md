@@ -1,2 +1,2 @@
 # SculptLauncher
-Modding MCBE by c/cpp
+A launcher with modding MCBE by C/C++
